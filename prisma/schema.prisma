@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id                Int                 @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  departmentId      Int
+  employeeNumber    String
+  idNumber          String
+  email             String
+  password          String
+  role              USER_ROLE           @default(STAFF)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  department        Departments?        @relation("departmentStaff", fields: [departmentId], references: [id])
+  DocumentRequest   DocumentRequests[]
+  Notifications     Notifications[]
+  UploadedDocuments UploadedDocuments[]
+  DocumentHistory   DocumentHistory[]
+  Departments       Departments[]       @relation("headOfDepartment")
+}
+
+model Departments {
+  id                 Int      @id @default(autoincrement())
+  name               String
+  headOfDepartmentId Int
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  Users              Users[]  @relation("departmentStaff")
+  headOfDepartment   Users?   @relation("headOfDepartment", fields: [headOfDepartmentId], references: [id])
+}
+
+model DocumentRequests {
+  id                Int                 @id @default(autoincrement())
+  documentType      DOCUMENT_TYPE
+  title             String
+  description       String
+  isRepeated        Boolean
+  createdByUserId   Int
+  expireDate        DateTime?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  createdBy         Users?              @relation(fields: [createdByUserId], references: [id])
+  UploadedDocuments UploadedDocuments[]
+}
+
+model Notifications {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  title       String
+  description String
+  hasSeen     Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        Users?   @relation(fields: [userId], references: [id])
+}
+
+model UploadedDocuments {
+  id                Int               @id @default(autoincrement())
+  userId            Int
+  documentRequestId Int
+  purpose           String
+  description       String
+  status            DOCUMENT_STATUS   @default(PENDING)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  user              Users?            @relation(fields: [userId], references: [id])
+  documentRequest   DocumentRequests? @relation(fields: [documentRequestId], references: [id])
+  Documents         Documents[]
+}
+
+model Documents {
+  id                 Int                @id @default(autoincrement())
+  uploadedDocumentId Int
+  fileName           String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  uploadedDocument   UploadedDocuments? @relation(fields: [uploadedDocumentId], references: [id])
+  DocumentHistory    DocumentHistory[]
+}
+
+model DocumentHistory {
+  id             Int        @id @default(autoincrement())
+  documentId     Int
+  Action         String
+  ActionByUserId Int
+  document       Documents? @relation(fields: [documentId], references: [id])
+  ActionBy       Users?     @relation(fields: [ActionByUserId], references: [id])
+}
+
+enum USER_ROLE {
+  ADMIN
+  HR
+  HOD
+  STAFF
+}
+
+enum DOCUMENT_TYPE {
+  NORMAL
+  QUESTION
+}
+
+enum DOCUMENT_STATUS {
+  PENDING
+  APPROVED
+  REJECTED
+}
