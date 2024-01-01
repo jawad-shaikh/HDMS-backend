@@ -91,11 +91,12 @@ model Documents {
 
 model DocumentHistory {
   id                 Int                @id @default(autoincrement())
-  UploadedDocumentId Int
-  Action             String
-  ActionByUserId     Int
-  uploadedDocument   UploadedDocuments? @relation(fields: [UploadedDocumentId], references: [id])
-  ActionBy           Users?             @relation(fields: [ActionByUserId], references: [id])
+  uploadedDocumentId Int
+  action             String
+  actionByUserId     Int?
+  createdAt          DateTime           @default(now())
+  uploadedDocument   UploadedDocuments? @relation(fields: [uploadedDocumentId], references: [id])
+  actionBy           Users?             @relation(fields: [actionByUserId], references: [id])
 }
 
 enum USER_ROLE {

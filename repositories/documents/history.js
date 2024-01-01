@@ -5,6 +5,7 @@ const getAllDocumentHistory = async (filter) => {
     const documents = await prisma.uploadedDocuments.findMany({
       include: {
         user: true,
+        documentHistory: true,
         documentRequest: {
           include: {
             createdBy: true,

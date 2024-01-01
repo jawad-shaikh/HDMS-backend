@@ -55,6 +55,7 @@ const register = async (req, res) => {
     const response = okResponse(user, 'Registration successful!');
     return res.status(response.status.code).json(response);
   } catch (error) {
+    console.log(error);
     const response = serverErrorResponse(error);
     return res.status(response.status.code).json(response);
   }

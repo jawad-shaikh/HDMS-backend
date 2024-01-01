@@ -7,7 +7,11 @@ const getAllDocumentHistory = async (req, res) => {
 
   try {
     if (userRole === 'ADMIN' || userRole === 'HR') {
-      let documents = await documentSubmissionsRepository.getAllDocumentHistory();
+      let documents = await documentSubmissionsRepository.getAllDocumentHistory({
+        NOT: {
+          status: 'PENDING',
+        },
+      });
 
       const response = okResponse(documents);
       return res.status(response.status.code).json(response);

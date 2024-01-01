@@ -19,7 +19,7 @@ const getAllExpiryDocuments = async (req, res) => {
     }
 
     // department expired documents
-    if (userRole === 'HOD' && department) {
+    if (userRole === 'HOD' && department === 'true') {
       const hod = await userRepository.getSingleUsers(userId);
 
       let documents = await documentExpiryRepository.getAllExpiryDocuments({

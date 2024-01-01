@@ -53,15 +53,6 @@ const createUsers = async (data) => {
   try {
     const user = await prisma.users.create({
       data,
-      select: {
-        id: true,
-        firstName: true,
-        lastName: true,
-        employeeNumber: true,
-        idNumber: true,
-        email: true,
-        role: true,
-      },
     });
 
     return user;

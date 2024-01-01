@@ -12,6 +12,7 @@ const getAllDocumentSubmissions = async (filter) => {
             size: true,
           },
         },
+        documentHistory: true,
         documentRequest: {
           include: {
             createdBy: true,

@@ -24,9 +24,16 @@ const checkForExpiredDocuments = async () => {
   });
 
   for (const submittedDocument of submittedDocuments) {
-    await prisma.uploadedDocuments.update({
+    const expiredDoc = await prisma.uploadedDocuments.update({
       data: { isExpired: true },
       where: { id: submittedDocument.id },
+    });
+
+    await prisma.documentHistory.create({
+      data: {
+        uploadedDocumentId: expiredDoc.id,
+        action: `Document expired`,
+      },
     });
 
     await notificationRepository.sendNotification(
