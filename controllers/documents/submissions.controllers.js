@@ -187,7 +187,7 @@ const rejectDocumentSubmission = async (req, res) => {
     await prisma.documentHistory.create({
       data: {
         uploadedDocumentId: id,
-        action: `Approved by ${user.firstName} ${user.lastName}`,
+        action: `Rejected by ${user.firstName} ${user.lastName}`,
       },
     });
 
