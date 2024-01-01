@@ -3,11 +3,27 @@ const { okResponse, serverErrorResponse } = require('generic-response');
 const documentSubmissionsRepository = require('../../repositories/documents/history');
 
 const getAllDocumentHistory = async (req, res) => {
-  try {
-    let documents = await documentSubmissionsRepository.getAllDocumentHistory();
+  const { userId, role: userRole } = req.user;
 
-    const response = okResponse(documents);
-    return res.status(response.status.code).json(response);
+  try {
+    if (userRole === 'ADMIN' || userRole === 'HR') {
+      let documents = await documentSubmissionsRepository.getAllDocumentHistory();
+
+      const response = okResponse(documents);
+      return res.status(response.status.code).json(response);
+    }
+
+    if (userRole === 'STAFF' || userRole === 'HOD') {
+      let documents = await documentSubmissionsRepository.getAllDocumentHistory({
+        userId: userId,
+        NOT: {
+          status: 'PENDING',
+        },
+      });
+
+      const response = okResponse(documents);
+      return res.status(response.status.code).json(response);
+    }
   } catch (error) {
     const response = serverErrorResponse();
     return res.status(response.status.code).json(response);

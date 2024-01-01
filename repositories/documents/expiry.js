@@ -1,6 +1,6 @@
 const prisma = require('../../config/database.config');
 
-const getAllDocumentHistory = async (filter) => {
+const getAllExpiryDocuments = async (filter) => {
   try {
     const documents = await prisma.uploadedDocuments.findMany({
       include: {
@@ -19,16 +19,6 @@ const getAllDocumentHistory = async (filter) => {
   }
 };
 
-const getSingleDocumentHistory = async (id) => {
-  try {
-    const document = await prisma.uploadedDocuments.findFirst({ where: { id } });
-    return document;
-  } catch (error) {
-    throw error;
-  }
-};
-
 module.exports = {
-  getAllDocumentHistory,
-  getSingleDocumentHistory,
+  getAllExpiryDocuments,
 };

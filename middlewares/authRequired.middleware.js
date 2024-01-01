@@ -2,17 +2,10 @@ const jwt = require('jsonwebtoken');
 const { badRequestResponse, unauthorizedResponse } = require('generic-response');
 
 const authRequired = async (req, res, next) => {
-  const authorizationHeader = req.headers?.authorization;
-
-  if (!authorizationHeader) {
-    const response = badRequestResponse('Authorization Token not provided.');
-    return res.status(response.status.code).json(response);
-  }
-
-  const token = authorizationHeader.split(' ')[1];
+  const token = req.headers?.authorization;
 
   if (!token) {
-    const response = badRequestResponse('Invalid token format.');
+    const response = badRequestResponse('Authorization Token not provided.');
     return res.status(response.status.code).json(response);
   }
 

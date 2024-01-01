@@ -1,7 +1,9 @@
 const Joi = require('joi');
 
 const getAllUsers = Joi.object({
-  query: Joi.object({}),
+  query: Joi.object({
+    role: Joi.string().valid('ADMIN', 'HR', 'HOD', 'STAFF').optional(),
+  }),
   params: Joi.object({}),
   body: Joi.object({}),
 });
@@ -12,6 +14,21 @@ const getSingleUsers = Joi.object({
     id: Joi.number().required(),
   }),
   body: Joi.object({}),
+});
+
+const createUsers = Joi.object({
+  query: Joi.object({}),
+  params: Joi.object({}),
+  body: Joi.object({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    departmentId: Joi.number().optional(),
+    role: Joi.string().valid('ADMIN', 'HR', 'HOD', 'STAFF').required(),
+    employeeNumber: Joi.string().required(),
+    idNumber: Joi.string().required(),
+    email: Joi.string().email().required(),
+    password: Joi.string().required(),
+  }),
 });
 
 const updateUsers = Joi.object({
@@ -26,6 +43,7 @@ const updateUsers = Joi.object({
     employeeNumber: Joi.string().optional(),
     idNumber: Joi.string().optional(),
     role: Joi.string().valid('ADMIN', 'HR', 'HOD', 'STAFF').optional(),
+    password: Joi.string().required(),
   }),
 });
 
@@ -40,6 +58,7 @@ const deleteUsers = Joi.object({
 module.exports = {
   getAllUsers,
   getSingleUsers,
+  createUsers,
   updateUsers,
   deleteUsers,
 };

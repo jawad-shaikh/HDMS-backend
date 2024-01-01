@@ -1,4 +1,4 @@
-const prisma = require("../../configs/prisma");
+const prisma = require('../../config/database.config');
 
 const deleteAllDataFromAllTables = async () => {
   try {
@@ -17,9 +17,9 @@ const deleteAllDataFromAllTables = async () => {
 
     await prisma.$transaction(transactions);
 
-    console.log("Deleted data successfully.");
+    console.log('Deleted data successfully.');
   } catch (error) {
-    console.log("Could not delete data.");
+    console.log('Could not delete data.');
   }
 };
 

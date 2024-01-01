@@ -7,14 +7,14 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    let user = await userRepository.getUserByEmail(email);
+    const user = await userRepository.getUserByEmail(email);
 
     if (!user) {
       const response = unauthorizedResponse('Incorrect email or password. Please try again.');
       return res.status(response.status.code).json(response);
     }
 
-    if (password === user.password) {
+    if (password !== user.password) {
       const response = unauthorizedResponse('Incorrect email or password. Please try again.');
       return res.status(response.status.code).json(response);
     }
@@ -31,7 +31,7 @@ const login = async (req, res) => {
 
     const token = jwt.sign(jwtPayload, process.env.JWT_SECRET);
 
-    const response = okResponse(token, jwtPayload);
+    const response = okResponse({ token, userData: jwtPayload }, 'Login Success!');
     return res.status(response.status.code).json(response);
   } catch (error) {
     const response = serverErrorResponse(error);

@@ -11,7 +11,7 @@ model Users {
   id                Int                 @id @default(autoincrement())
   firstName         String
   lastName          String
-  departmentId      Int
+  departmentId      Int?
   employeeNumber    String
   idNumber          String
   email             String
@@ -30,7 +30,7 @@ model Users {
 model Departments {
   id                 Int      @id @default(autoincrement())
   name               String
-  headOfDepartmentId Int
+  headOfDepartmentId Int?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   Users              Users[]  @relation("departmentStaff")
@@ -44,7 +44,6 @@ model DocumentRequests {
   description       String
   isRepeated        Boolean
   createdByUserId   Int
-  expireDate        DateTime?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @updatedAt
   createdBy         Users?              @relation(fields: [createdByUserId], references: [id])
@@ -66,33 +65,37 @@ model UploadedDocuments {
   id                Int               @id @default(autoincrement())
   userId            Int
   documentRequestId Int
-  purpose           String
-  description       String
   status            DOCUMENT_STATUS   @default(PENDING)
+  expireDate        DateTime?
+  isExpired         Boolean           @default(false)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
   user              Users?            @relation(fields: [userId], references: [id])
   documentRequest   DocumentRequests? @relation(fields: [documentRequestId], references: [id])
-  Documents         Documents[]
+  documents         Documents[]
+  documentHistory   DocumentHistory[]
 }
 
 model Documents {
   id                 Int                @id @default(autoincrement())
   uploadedDocumentId Int
+  originalName       String
   fileName           String
+  mimetype           String
+  size               Int
+  hasDownloaded      Boolean            @default(false)
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
   uploadedDocument   UploadedDocuments? @relation(fields: [uploadedDocumentId], references: [id])
-  DocumentHistory    DocumentHistory[]
 }
 
 model DocumentHistory {
-  id             Int        @id @default(autoincrement())
-  documentId     Int
-  Action         String
-  ActionByUserId Int
-  document       Documents? @relation(fields: [documentId], references: [id])
-  ActionBy       Users?     @relation(fields: [ActionByUserId], references: [id])
+  id                 Int                @id @default(autoincrement())
+  UploadedDocumentId Int
+  Action             String
+  ActionByUserId     Int
+  uploadedDocument   UploadedDocuments? @relation(fields: [UploadedDocumentId], references: [id])
+  ActionBy           Users?             @relation(fields: [ActionByUserId], references: [id])
 }
 
 enum USER_ROLE {

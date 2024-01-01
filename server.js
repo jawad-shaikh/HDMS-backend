@@ -1,7 +1,7 @@
 const env = require('dotenv');
 const path = require('path');
 
-const logger = require('./config/logger');
+const logger = require('./config/logger.config');
 
 if (process.env.NODE_ENV === 'dev') {
   env.config({ path: path.join(__dirname, '.env.dev') });

@@ -1,6 +1,6 @@
 const { badRequestResponse } = require('generic-response');
 
-const logger = require('../configs/logger');
+const logger = require('../config/logger.config');
 
 const validateRequest = (schema) => (req, res, next) => {
   const { body, params, query } = req;

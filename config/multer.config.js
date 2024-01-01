@@ -1,18 +1,15 @@
+const path = require('path');
 const multer = require('multer');
 
-const gamesStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/staff-documents');
-  },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    const fileName = 'document-' + uniqueSuffix + '.' + file.originalname.split('.').pop();
-
-    req.generatedFileName = fileName;
-    cb(null, fileName);
+const staffDocumentsStorage = multer.diskStorage({
+  destination: 'uploads/documents',
+  filename: (req, file, cb) => {
+    const fileExt = path.extname(file.originalname);
+    const finalFilename = `${file.fieldname}-${Date.now()}${fileExt}`;
+    cb(null, finalFilename);
   },
 });
 
 module.exports = {
-  gamesStorage,
+  staffDocumentsStorage,
 };

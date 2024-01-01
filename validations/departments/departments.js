@@ -19,7 +19,7 @@ const createDepartment = Joi.object({
   params: Joi.object({}),
   body: Joi.object({
     name: Joi.string().required(),
-    headOfDepartmentId: Joi.string().required(),
+    headOfDepartmentId: Joi.number().optional(),
   }),
 });
 
@@ -30,7 +30,7 @@ const updateDepartment = Joi.object({
   }),
   body: Joi.object({
     name: Joi.string().optional(),
-    headOfDepartmentId: Joi.string().optional(),
+    headOfDepartmentId: Joi.number().optional(),
   }),
 });
 

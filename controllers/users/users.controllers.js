@@ -1,10 +1,23 @@
-const { okResponse, updateSuccessResponse, deleteSuccessResponse, serverErrorResponse } = require('generic-response');
+const {
+  okResponse,
+  updateSuccessResponse,
+  deleteSuccessResponse,
+  serverErrorResponse,
+  createSuccessResponse,
+  badRequestResponse,
+} = require('generic-response');
 
 const usersRepository = require('../../repositories/users/users');
 
 const getAllUsers = async (req, res) => {
+  const { role } = req.query;
+
   try {
-    let users = await usersRepository.getAllUsers();
+    const filter = {};
+
+    if (role) filter.role = role;
+
+    let users = await usersRepository.getAllUsers(filter);
 
     const response = okResponse(users);
     return res.status(response.status.code).json(response);
@@ -21,6 +34,27 @@ const getSingleUsers = async (req, res) => {
     let user = await usersRepository.getSingleUsers(id);
 
     const response = okResponse(user);
+    return res.status(response.status.code).json(response);
+  } catch (error) {
+    const response = serverErrorResponse();
+    return res.status(response.status.code).json(response);
+  }
+};
+
+const createUsers = async (req, res) => {
+  const data = req.body;
+
+  try {
+    const existingUser = await usersRepository.getUserByEmail(data.email);
+
+    if (existingUser) {
+      const response = badRequestResponse('Email already in use.');
+      return res.status(response.status.code).json(response);
+    }
+
+    const user = await usersRepository.createUsers(data);
+
+    const response = createSuccessResponse(user);
     return res.status(response.status.code).json(response);
   } catch (error) {
     const response = serverErrorResponse();
@@ -60,6 +94,7 @@ const deleteUsers = async (req, res) => {
 module.exports = {
   getAllUsers,
   getSingleUsers,
+  createUsers,
   updateUsers,
   deleteUsers,
 };

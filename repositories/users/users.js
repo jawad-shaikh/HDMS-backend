@@ -1,8 +1,19 @@
 const prisma = require('../../config/database.config');
 
-const getAllUsers = async () => {
+const getAllUsers = async (filter) => {
   try {
-    const users = await prisma.users.findMany();
+    const users = await prisma.users.findMany({
+      where: filter,
+      include: {
+        department: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+
     return users;
   } catch (error) {
     throw error;
@@ -11,7 +22,18 @@ const getAllUsers = async () => {
 
 const getSingleUsers = async (id) => {
   try {
-    const users = await prisma.users.findFirst({ where: { id } });
+    const users = await prisma.users.findFirst({
+      include: {
+        department: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      where: { id },
+    });
+
     return users;
   } catch (error) {
     throw error;

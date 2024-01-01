@@ -1,4 +1,7 @@
 const express = require('express');
+const multer = require('multer');
+
+const { staffDocumentsStorage } = require('../../config/multer.config');
 
 const validateRequest = require('../../middlewares/validateRequest.middleware');
 const authRequired = require('../../middlewares/authRequired.middleware');
@@ -8,7 +11,7 @@ const documentSubmissionControllers = require('../../controllers/documents/submi
 
 const router = express.Router();
 
-const upload = multer({ dest: 'uploads/staff-documents' });
+const upload = multer({ storage: staffDocumentsStorage });
 
 router.get(
   '/',
@@ -22,18 +25,24 @@ router.get(
   validateRequest(documentSubmissionValidations.getSingleDocumentSubmission),
   documentSubmissionControllers.getSingleDocumentSubmission,
 );
+router.get(
+  '/:id/docs',
+  authRequired,
+  validateRequest(documentSubmissionValidations.getSingleDocumentSubmissionDocuments),
+  documentSubmissionControllers.getSingleDocumentSubmissionDocuments,
+);
 router.post(
   '/',
   authRequired,
-  validateRequest(documentSubmissionValidations.createDocumentSubmission),
   upload.array('documents'),
+  validateRequest(documentSubmissionValidations.createDocumentSubmission),
   documentSubmissionControllers.createDocumentSubmission,
 );
 router.patch(
   '/:id',
   authRequired,
-  validateRequest(documentSubmissionValidations.updateDocumentSubmission),
   upload.array('documents'),
+  validateRequest(documentSubmissionValidations.updateDocumentSubmission),
   documentSubmissionControllers.updateDocumentSubmission,
 );
 router.delete(
@@ -41,6 +50,21 @@ router.delete(
   authRequired,
   validateRequest(documentSubmissionValidations.deleteDocumentSubmission),
   documentSubmissionControllers.deleteDocumentSubmission,
+);
+
+// Approve or Reject Document
+
+router.patch(
+  '/:id/approve',
+  authRequired,
+  validateRequest(documentSubmissionValidations.approveDocumentSubmission),
+  documentSubmissionControllers.approveDocumentSubmission,
+);
+router.patch(
+  '/:id/reject',
+  authRequired,
+  validateRequest(documentSubmissionValidations.rejectDocumentSubmission),
+  documentSubmissionControllers.rejectDocumentSubmission,
 );
 
 module.exports = router;

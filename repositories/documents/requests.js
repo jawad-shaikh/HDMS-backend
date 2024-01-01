@@ -2,7 +2,19 @@ const prisma = require('../../config/database.config');
 
 const getAllDocumentRequests = async (filter) => {
   try {
-    const documents = await prisma.documentRequests.findMany(filter);
+    const documents = await prisma.documentRequests.findMany({
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+      where: filter,
+    });
+
     return documents;
   } catch (error) {
     throw error;
@@ -11,16 +23,34 @@ const getAllDocumentRequests = async (filter) => {
 
 const getSingleDocumentRequest = async (id) => {
   try {
-    const document = await prisma.documentRequests.findFirst({ where: { id } });
+    const document = await prisma.documentRequests.findFirst({
+      include: {
+        createdBy: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+      where: { id },
+    });
+
     return document;
   } catch (error) {
     throw error;
   }
 };
 
-const createDocumentRequest = async (data) => {
+const createDocumentRequest = async (userId, data) => {
   try {
-    const document = await prisma.documentRequests.create({ data });
+    const document = await prisma.documentRequests.create({
+      data: {
+        ...data,
+        createdByUserId: userId,
+      },
+    });
+
     return document;
   } catch (error) {
     throw error;
