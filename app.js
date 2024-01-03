@@ -9,7 +9,6 @@ app.use(cors());
 
 // require('./cron-jobs/index');
 
-app.get('/', (req, res) => res.send('hello'));
 app.use('/api/v1', require('./routes/index'));
 
 module.exports = app;
