@@ -85,9 +85,10 @@ CREATE TABLE `Documents` (
 -- CreateTable
 CREATE TABLE `DocumentHistory` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `UploadedDocumentId` INTEGER NOT NULL,
-    `Action` VARCHAR(191) NOT NULL,
-    `ActionByUserId` INTEGER NOT NULL,
+    `uploadedDocumentId` INTEGER NOT NULL,
+    `action` VARCHAR(191) NOT NULL,
+    `actionByUserId` INTEGER NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -114,7 +115,7 @@ ALTER TABLE `UploadedDocuments` ADD CONSTRAINT `UploadedDocuments_documentReques
 ALTER TABLE `Documents` ADD CONSTRAINT `Documents_uploadedDocumentId_fkey` FOREIGN KEY (`uploadedDocumentId`) REFERENCES `UploadedDocuments`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `DocumentHistory` ADD CONSTRAINT `DocumentHistory_UploadedDocumentId_fkey` FOREIGN KEY (`UploadedDocumentId`) REFERENCES `UploadedDocuments`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `DocumentHistory` ADD CONSTRAINT `DocumentHistory_uploadedDocumentId_fkey` FOREIGN KEY (`uploadedDocumentId`) REFERENCES `UploadedDocuments`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `DocumentHistory` ADD CONSTRAINT `DocumentHistory_ActionByUserId_fkey` FOREIGN KEY (`ActionByUserId`) REFERENCES `Users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `DocumentHistory` ADD CONSTRAINT `DocumentHistory_actionByUserId_fkey` FOREIGN KEY (`actionByUserId`) REFERENCES `Users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
