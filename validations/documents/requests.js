@@ -1,7 +1,10 @@
 const Joi = require('joi');
 
 const getAllDocumentRequests = Joi.object({
-  query: Joi.object({}),
+  query: Joi.object({
+    start: Joi.date().optional(),
+    end: Joi.date().optional(),
+  }),
   params: Joi.object({}),
   body: Joi.object({}),
 });

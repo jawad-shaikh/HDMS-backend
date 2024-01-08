@@ -11,43 +11,20 @@ const usersRepository = require('../../repositories/users/users');
 const notificationsRepository = require('../../repositories/notifications/notifications');
 
 const getAllDocumentRequests = async (req, res) => {
-  const { userId, role: userRole } = req.user;
+  const { start, end } = req.query;
+
+  if (start && end) {
+    filter.createdAt = {
+      gte: new Date(start),
+      lte: new Date(end),
+    };
+  }
 
   try {
-    if (userRole === 'ADMIN' || userRole === 'HR') {
-      let documents = await documentRequestsRepository.getAllDocumentRequests();
+    let documents = await documentRequestsRepository.getAllDocumentRequests();
 
-      const response = okResponse(documents);
-      return res.status(response.status.code).json(response);
-    }
-
-    if (userRole === 'STAFF' || userRole === 'HOD') {
-      const notSubmittedRequests = await documentRequestsRepository.getAllDocumentRequests({
-        NOT: {
-          UploadedDocuments: {
-            some: {
-              userId,
-            },
-          },
-        },
-      });
-
-      // const submittedRequestsButNotApproved = await documentRequestsRepository.getAllDocumentRequests({
-      //   UploadedDocuments: {
-      //     some: {
-      //       userId,
-      //       status: {
-      //         not: 'APPROVED',
-      //       },
-      //     },
-      //   },
-      // });
-
-      // const documents = [...notSubmittedRequests, ...submittedRequestsButNotApproved];
-
-      const response = okResponse(notSubmittedRequests);
-      return res.status(response.status.code).json(response);
-    }
+    const response = okResponse(documents);
+    return res.status(response.status.code).json(response);
   } catch (error) {
     const response = serverErrorResponse();
     return res.status(response.status.code).json(response);

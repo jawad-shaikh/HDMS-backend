@@ -4,7 +4,11 @@ const getAllExpiryDocuments = async (filter) => {
   try {
     const documents = await prisma.uploadedDocuments.findMany({
       include: {
-        user: true,
+        user: {
+          include: {
+            department: true,
+          },
+        },
         documentHistory: true,
         documentRequest: {
           include: {

@@ -4,6 +4,32 @@ const documentSubmissionsRepository = require('../../repositories/documents/hist
 
 const getAllDocumentHistory = async (req, res) => {
   const { userId, role: userRole } = req.user;
+  const { start, end, startExpiry, endExpiry, hr, status } = req.query;
+
+  const filter = {};
+
+  if (start && end) {
+    filter.createdAt = {
+      gte: new Date(start),
+      lte: new Date(end),
+    };
+  }
+  if (startExpiry && endExpiry) {
+    filter.expireDate = {
+      gte: new Date(start),
+      lte: new Date(end),
+    };
+  }
+  if (hr) {
+    filter.documentRequest = {
+      createdBy: {
+        id: hr,
+      },
+    };
+  }
+  if (status) {
+    filter.status = status;
+  }
 
   try {
     if (userRole === 'ADMIN' || userRole === 'HR') {

@@ -5,7 +5,25 @@ const userRepository = require('../../repositories/users/users');
 
 const getAllExpiryDocuments = async (req, res) => {
   const { userId, role: userRole } = req.user;
-  const { department } = req.query;
+  const { department, start, end, startExpiry, endExpiry, status } = req.query;
+
+  const filter = {};
+
+  if (start && end) {
+    filter.createdAt = {
+      gte: new Date(start),
+      lte: new Date(end),
+    };
+  }
+  if (startExpiry && endExpiry) {
+    filter.expireDate = {
+      gte: new Date(start),
+      lte: new Date(end),
+    };
+  }
+  if (status) {
+    filter.status = status;
+  }
 
   try {
     // all expired documents

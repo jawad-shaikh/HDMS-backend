@@ -9,6 +9,20 @@ const {
 const departmentsRepository = require('../../repositories/departments/departments');
 
 const getAllDepartments = async (req, res) => {
+  const { hod, start, end } = req.query;
+
+  if (hod) {
+    filter.headOfDepartment = {
+      id: hod,
+    };
+  }
+  if (start && end) {
+    filter.updatedAt = {
+      gte: new Date(start),
+      lte: new Date(end),
+    };
+  }
+
   try {
     let departments = await departmentsRepository.getAllDepartments();
 

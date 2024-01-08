@@ -1,7 +1,13 @@
 const Joi = require('joi');
 
 const getAllDocumentSubmissions = Joi.object({
-  query: Joi.object({}),
+  query: Joi.object({
+    start: Joi.date().optional(),
+    end: Joi.date().optional(),
+    startExpiry: Joi.date().optional(),
+    endExpiry: Joi.date().optional(),
+    hr: Joi.number().optional(),
+  }),
   params: Joi.object({}),
   body: Joi.object({}),
 });
@@ -15,7 +21,9 @@ const getSingleDocumentSubmission = Joi.object({
 });
 
 const getSingleDocumentSubmissionDocuments = Joi.object({
-  query: Joi.object({}),
+  query: Joi.object({
+    remove: Joi.string().valid('true', 'false').optional(),
+  }),
   params: Joi.object({
     id: Joi.number().required(),
   }),
@@ -26,7 +34,7 @@ const createDocumentSubmission = Joi.object({
   query: Joi.object({}),
   params: Joi.object({}),
   body: Joi.object({
-    documentRequestId: Joi.number().required(),
+    documentRequestId: Joi.string().required(),
     expireDate: Joi.date().optional(),
   }),
 });

@@ -10,12 +10,23 @@ const {
 const usersRepository = require('../../repositories/users/users');
 
 const getAllUsers = async (req, res) => {
-  const { role } = req.query;
+  const { role, department, start, end } = req.query;
 
   try {
     const filter = {};
 
-    if (role) filter.role = role;
+    if (role) {
+      filter.role = role;
+    }
+    if (department) {
+      filter.department = department;
+    }
+    if (start && end) {
+      filter.updatedAt = {
+        gte: new Date(start),
+        lte: new Date(end),
+      };
+    }
 
     let users = await usersRepository.getAllUsers(filter);
 

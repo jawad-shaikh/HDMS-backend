@@ -5,6 +5,7 @@ const { staffDocumentsStorage } = require('../../config/multer.config');
 
 const validateRequest = require('../../middlewares/validateRequest.middleware');
 const authRequired = require('../../middlewares/authRequired.middleware');
+const multerErrorHandler = require('../../middlewares/multerError.middleware');
 
 const documentSubmissionValidations = require('../../validations/documents/submissions');
 const documentSubmissionControllers = require('../../controllers/documents/submissions.controllers');
@@ -35,6 +36,7 @@ router.post(
   '/',
   authRequired,
   upload.array('documents'),
+  multerErrorHandler,
   validateRequest(documentSubmissionValidations.createDocumentSubmission),
   documentSubmissionControllers.createDocumentSubmission,
 );
@@ -42,6 +44,7 @@ router.patch(
   '/:id',
   authRequired,
   upload.array('documents'),
+  multerErrorHandler,
   validateRequest(documentSubmissionValidations.updateDocumentSubmission),
   documentSubmissionControllers.updateDocumentSubmission,
 );

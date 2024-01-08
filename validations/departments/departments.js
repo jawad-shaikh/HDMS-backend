@@ -1,7 +1,11 @@
 const Joi = require('joi');
 
 const getAllDepartments = Joi.object({
-  query: Joi.object({}),
+  query: Joi.object({
+    hod: Joi.number().optional(),
+    start: Joi.date().optional(),
+    end: Joi.date().optional(),
+  }),
   params: Joi.object({}),
   body: Joi.object({}),
 });
