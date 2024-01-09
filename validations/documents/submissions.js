@@ -6,7 +6,7 @@ const getAllDocumentSubmissions = Joi.object({
     end: Joi.date().optional(),
     startExpiry: Joi.date().optional(),
     endExpiry: Joi.date().optional(),
-    hr: Joi.number().optional(),
+    hrId: Joi.number().optional(),
   }),
   params: Joi.object({}),
   body: Joi.object({}),

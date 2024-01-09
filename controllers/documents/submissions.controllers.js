@@ -1,4 +1,4 @@
-const nodeZip = require('node-zip');
+const AdmZip = require('adm-zip');
 const path = require('path');
 const fs = require('fs');
 const {
@@ -16,27 +16,27 @@ const documentSubmissionsRepository = require('../../repositories/documents/subm
 const userRepository = require('../../repositories/users/users');
 
 const getAllDocumentSubmissions = async (req, res) => {
-  const { start, end, startExpiry, endExpiry, hr } = req.query;
+  const { start, end, startExpiry, endExpiry, hrId } = req.query;
   const { userId, role: userRole } = req.user;
 
   const filter = {};
 
-  if (start && end) {
+  if (start && start !== '0' && end && end !== '0') {
     filter.createdAt = {
       gte: new Date(start),
       lte: new Date(end),
     };
   }
-  if (startExpiry && endExpiry) {
+  if (startExpiry && startExpiry !== '0' && endExpiry && endExpiry !== '0') {
     filter.expireDate = {
-      gte: new Date(start),
-      lte: new Date(end),
+      gte: new Date(startExpiry),
+      lte: new Date(endExpiry),
     };
   }
-  if (hr) {
+  if (hrId && hrId !== '0') {
     filter.documentRequest = {
       createdBy: {
-        id: hr,
+        id: +hrId,
       },
     };
   }
@@ -62,6 +62,7 @@ const getAllDocumentSubmissions = async (req, res) => {
       return res.status(response.status.code).json(response);
     }
   } catch (error) {
+    console.log(error);
     const response = serverErrorResponse();
     return res.status(response.status.code).json(response);
   }
@@ -109,23 +110,25 @@ const getSingleDocumentSubmissionDocuments = async (req, res) => {
       });
     }
 
-    // const zipData = createZipArchive(documents);
-
-    // res.set({
-    //   'Content-Type': 'application/zip',
-    //   'Content-Disposition': `attachment; filename='downloaded_files.zip'`,
+    // documents.forEach((doc) => {
+    //   doc.imageUrl = `${process.env.BACKEND_URL}/staff-documents/${doc.fileName}`;
+    //   delete doc.fileName;
     // });
 
-    // return res.end(zipData);
+    // const response = okResponse(documents);
+    // return res.status(response.status.code).json(response);
+
+    const zip = new AdmZip();
 
     documents.forEach((doc) => {
-      doc.imageUrl = `${process.env.BACKEND_URL}/staff-documents/${doc.fileName}`;
-      delete doc.fileName;
+      zip.addLocalFile(path.join(__dirname + '../../../uploads/staff-documents/' + doc.fileName));
     });
 
-    const response = okResponse(documents);
-    return res.status(response.status.code).json(response);
+    // const data = zip.toBuffer();
+    const downloadName = `${Date.now()}.zip`;
+    zip.writeZip(__dirname + '../../../uploads/staff-documents/' + downloadName);
 
+    res.send(process.env.BACKEND_URL + '/staff-documents/' + downloadName);
   } catch (error) {
     const response = serverErrorResponse(error);
     return res.status(response.status.code).json(response);

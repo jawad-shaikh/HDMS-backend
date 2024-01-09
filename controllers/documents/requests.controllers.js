@@ -13,7 +13,9 @@ const notificationsRepository = require('../../repositories/notifications/notifi
 const getAllDocumentRequests = async (req, res) => {
   const { start, end } = req.query;
 
-  if (start && end) {
+  const filter = {};
+
+  if (start && start !== '0' && end && end !== '0') {
     filter.createdAt = {
       gte: new Date(start),
       lte: new Date(end),
@@ -21,7 +23,7 @@ const getAllDocumentRequests = async (req, res) => {
   }
 
   try {
-    let documents = await documentRequestsRepository.getAllDocumentRequests();
+    let documents = await documentRequestsRepository.getAllDocumentRequests(filter);
 
     const response = okResponse(documents);
     return res.status(response.status.code).json(response);

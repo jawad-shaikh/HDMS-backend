@@ -3,9 +3,9 @@ const Joi = require('joi');
 const getAllUsers = Joi.object({
   query: Joi.object({
     role: Joi.string().valid('ADMIN', 'HR', 'HOD', 'STAFF').optional(),
-    department: Joi.number().optional(),
-    start: Joi.date().optional(),
-    end: Joi.date().optional(),
+    departmentId: Joi.string().optional(),
+    start: Joi.string().optional(),
+    end: Joi.string().optional(),
   }),
   params: Joi.object({}),
   body: Joi.object({}),

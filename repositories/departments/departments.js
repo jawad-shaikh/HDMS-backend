@@ -1,6 +1,6 @@
 const prisma = require('../../config/database.config');
 
-const getAllDepartments = async () => {
+const getAllDepartments = async (filter) => {
   try {
     const departments = await prisma.departments.findMany({
       select: {
@@ -16,6 +16,7 @@ const getAllDepartments = async () => {
           },
         },
       },
+      where: filter,
     });
     return departments;
   } catch (error) {

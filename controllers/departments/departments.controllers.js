@@ -9,14 +9,16 @@ const {
 const departmentsRepository = require('../../repositories/departments/departments');
 
 const getAllDepartments = async (req, res) => {
-  const { hod, start, end } = req.query;
+  const { hodId, start, end } = req.query;
 
-  if (hod) {
+  const filter = {};
+
+  if (hodId && hodId !== '0') {
     filter.headOfDepartment = {
-      id: hod,
+      id: +hodId,
     };
   }
-  if (start && end) {
+  if (start && start !== '0' && end && end !== '0') {
     filter.updatedAt = {
       gte: new Date(start),
       lte: new Date(end),
@@ -24,11 +26,12 @@ const getAllDepartments = async (req, res) => {
   }
 
   try {
-    let departments = await departmentsRepository.getAllDepartments();
+    let departments = await departmentsRepository.getAllDepartments(filter);
 
     const response = okResponse(departments);
     return res.status(response.status.code).json(response);
   } catch (error) {
+    console.log(error);
     const response = serverErrorResponse();
     return res.status(response.status.code).json(response);
   }
