@@ -8,6 +8,7 @@ const {
 } = require('generic-response');
 
 const usersRepository = require('../../repositories/users/users');
+const departmentsRepository = require('../../repositories/departments/departments');
 
 const getAllUsers = async (req, res) => {
   const { role, departmentId, start, end } = req.query;
@@ -66,6 +67,10 @@ const createUsers = async (req, res) => {
 
     const user = await usersRepository.createUsers(data);
 
+    if (data.departmentId) {
+      const user = await departmentsRepository.updateDepartment({ id: data.departmentId, headOfDepartmentId: user.id });
+    }
+
     const response = createSuccessResponse(user);
     return res.status(response.status.code).json(response);
   } catch (error) {
@@ -80,6 +85,10 @@ const updateUsers = async (req, res) => {
 
   try {
     const users = await usersRepository.updateUsers(id, data);
+
+    if (data.departmentId) {
+      const user = await departmentsRepository.updateDepartment({ id: data.departmentId, headOfDepartmentId: user.id });
+    }
 
     const response = updateSuccessResponse(users);
     return res.status(response.status.code).json(response);

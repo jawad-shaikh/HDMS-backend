@@ -2,12 +2,12 @@ const Joi = require('joi');
 
 const getAllDocumentHistory = Joi.object({
   query: Joi.object({
-    start: Joi.date().optional(),
-    end: Joi.date().optional(),
-    startExpiry: Joi.date().optional(),
-    endExpiry: Joi.date().optional(),
-    hr: Joi.number().optional(),
-    status: Joi.string().valid('PENDING', 'APPROVED', 'REJECTED').optional(),
+    start: Joi.string().optional(),
+    end: Joi.string().optional(),
+    startExpiry: Joi.string().optional(),
+    endExpiry: Joi.string().optional(),
+    hrId: Joi.number().optional(),
+    status: Joi.string().optional(),
   }),
   params: Joi.object({}),
   body: Joi.object({}),
